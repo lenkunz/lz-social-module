@@ -1,5 +1,6 @@
 var request = require('request');
 var form_data_encode = require('form-urlencoded');
+var Promise = require("promise-polyfill");
 
 var form = module.exports.form = function(endpoint, options, data, accessToken, accessType){
     options.headers = options.headers || {};
