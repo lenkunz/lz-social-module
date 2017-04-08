@@ -349,3 +349,5 @@ var m = function(options){
         return true;
     }.bind(this);
 };
+
+module.exports = m;
