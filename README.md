@@ -14,7 +14,9 @@ var service = require('<path_to_module>');
 It is general NodeJS module which is not bundled with any bundler script and not using ES 2015 code style.
 
 ## Installation
-Just copy this module to where you prefer and run **npm install** on target directory.
+```bash
+npm install lz-social-module
+```
 
 ## Facebook module creation
 To initialize facebook module just require the module and create instance of facebook
@@ -72,7 +74,7 @@ After user following the entry URL facebook will send webhook back to where you 
 This service already has function to handle that process. But you need to provide it a HTTP request object. (mostly called as **req** in express.js and node http module)
 
 ```javascript
-app.post('<path_to_callback_specified>', function(req, res, next){
+app.post('<webhook_endpoint>', function(req, res, next){
     var data = FB.webhook.callbackPOST(req)
     
     if(data === false){
@@ -196,3 +198,30 @@ app.post('<webhook_endpoint>', function(req, res, next){
     return next();
 });
 ```
+
+### LINE
+#### General webhook handle
+By general LINE webhook handler will only filter the webhook and let all webhook pass.
+```javascript
+app.post('<webhook_endpoint>', function(req, res, next){
+    var data = LINE.webhook.callbackPOST(req)
+    
+    if(data === false){
+        return res.status(422).send('input not revalent');
+    }
+
+    next();
+})
+```
+
+You can also handle it manually to get other webhook. This service contains the webhook filter that can filter some of webhook that not for your app.
+```javascript
+app.post('<webhook_endpoint>', function(req, res, next){
+    if(!LINE.webhook.webhookFilter(req)){
+        return res.status(401, "request is invalid");
+    }
+
+    return next();
+});
+```
+
