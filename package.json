@@ -1,0 +1,17 @@
+{
+  "name": "lz-social-module",
+  "version": "0.0.1-beta",
+  "description": "Social chat module as service replacement.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rapeapach Suwasri <LenKunZ>",
+  "license": "MIT",
+  "dependencies": {
+    "crypto": "0.0.3",
+    "form-urlencoded": "^1.5.0",
+    "request": "^2.81.0",
+    "urijs": "^1.18.10"
+  }
+}
