@@ -12,12 +12,13 @@ This module made for sending and handle messenger service of Facebook and LINE w
     - [Overview](#overview)
     - [Requirement](#requirement)
     - [Installation](#installation)
-    - [Facebook module creation](#facebook-module-creation)
-    - [LINE module creation](#line-module-creation)
-    - [Simple user entrance process](#simple-user-entrance-process)
-        - [Get the entry URL](#get-the-entry-url)
-        - [Send Login action to user inbox - required for **Facebook** only](#send-login-action-to-user-inbox---required-for-facebook-only)
-        - [Handle callback and process to get permanent user id](#handle-callback-and-process-to-get-permanent-user-id)
+    - [Service module initialize](#service-module-initialize)
+        - [Facebook service](#facebook-service)
+        - [LINE service](#line-service)
+    - [Link app user to messenger API](#link-app-user-to-messenger-api)
+        - [Redirect user to initialize the process](#redirect-user-to-initialize-the-process)
+        - [Send login button to user's messenger - only for **Facebook**](#send-login-button-to-users-messenger---only-for-facebook)
+        - [Get permanent user message **Chatbox ID**](#get-permanent-user-message-chatbox-id)
             - [Facebook](#facebook)
             - [LINE](#line)
     - [Send the message](#send-the-message)
@@ -44,11 +45,12 @@ It is general NodeJS module which is not bundled with any bundler script and not
 
 ## Installation
 ```bash
-npm install lz-social-module
+npm install lz-social-module --save
 ```
 
-## Facebook module creation
-To initialize facebook module just require the module and create instance of facebook
+## Service module initialize
+### Facebook service
+To initialize Facebook module you only need to create instance by following code.
 
 ```javascript
 var service = require('lz-social-module');
@@ -60,10 +62,12 @@ var FB = new service.Facebook({
     pageUsername: "Username of facebook page."
 });
 ```
-All options property is required. You must provide all of them.
 
-## LINE module creation
-To initialize LINE module just require the module and create instance of facebook
+All option properties are required. You must provide all of them.
+
+### LINE service
+
+To initialize LINE module you only need to create instance by following code.
 
 ```javascript
 var service = require('lz-social-module');
@@ -75,36 +79,42 @@ var LINE = new service.Line({
     loginChannelSecret: "Secret key of LINE login channel."
 });
 ```
-All options property is required. You must provide all of them.
 
-## Simple user entrance process
-*For LINE/Facebook*
+All option properties are required. You must provide all of them.
 
-Simplest way made user connected to your service is to prepare the state and handle the webhook.
+## Link app user to messenger API
 
-This module was designed to handle only the process related to messing notify. So you can simply using module function.
+For **LINE**/**Facebook**
 
-### Get the entry URL
-Both LINE and Facebook require user to follow specific URL to let it know that user want to message the app.
-You can get that url by calling this function
+The simplest way to sync your service with messenger API is to handle the **webhook**.
+
+This module was designed to handle those process to link app's account with messenger API. So you can simply adapt our process to your app structure.
+It was only compatible with ***NodeJS HTTP request style*** (e.g. Express.js)
+
+### Redirect user to initialize the process
+Both **LINE** and **Facebook** require user to follow specific generated URL to let it know that user allow the service to message them. Which called **Entry Point**.
+
+You can get **Entry Point** URL by call these functions.
 
 ```javascript
-var facebookEntryURL = FB.auth.entryURL("state");
-var lineEntryURL = LINE.auth.entryURL("state");
+// For Facebook
+var facebookEntryURL = FB.auth.entryURL(state);
+// For LINE
+var lineEntryURL = LINE.auth.entryURL(state);
 ```
 
-Where **state** is the string using to identify user to app in specific period of time.
+When **state** is the *string* that can use for identify the user to app in a specific period of time.
 
 *Permanent **state** string is not recommended for security reason.*
 
-### Send Login action to user inbox - required for **Facebook** only
-After user following the entry URL facebook will send webhook back to where you set it in app settings.
+### Send login button to user's messenger - only for **Facebook**
+After user followed the **Entry Point** URL Facebook will send **OPEN_THREAD** webhook to where you set it in Facebook developer app console.
 
-This service already has function to handle that process. But you need to provide it a HTTP request object. (mostly called as **req** in express.js and node http module)
+The service implements function that can handles the process. But you need to give it a HTTP request object. (mostly called as **req** in express.js and Node HTTP module)
 
 ```javascript
 app.post('<webhook_endpoint>', function(req, res, next){
-    var data = FB.webhook.callbackPOST(req)
+    var data = FB.webhook.callbackPOST(req);
     
     if(data === false){
         return res.status(422).send('input not revalent');
@@ -128,9 +138,9 @@ app.post('<webhook_endpoint>', function(req, res, next){
 })
 ```
 
-### Handle callback and process to get permanent user id
-- For **Facebook** this will happen after user click on login link
-- For **LINE** this will happen after user login after followed the entry url.
+### Get permanent user message **Chatbox ID** 
+- For **Facebook** this will happens after user click the login link.
+- For **LINE** this will happens after user login after followed the **Entry Point URL**.
 
 #### Facebook
 ```javascript
@@ -175,7 +185,7 @@ app.get('<path_to_callback_url_in_option>', function(req, res, next){
 ```
 
 ## Send the message
-To send message to user. The service need user object which has structure.
+To send message to user. The service need user object which has following structure.
 ```json
 {
     "id": "user or channel id"
@@ -199,10 +209,10 @@ LINE.message.text(user, "Hello, World", function(err){
 ## Webhook handling
 ### Facebook
 #### Endpoint confirmation
-To use **Facebook** webhook. It require the service to confirm it status by sending ***GET** request* to webhook endpoint
-which contain secret word. You need to provide it in **options.webhookToken**
+To use **Facebook** webhook. It requires the service to confirm its status by sending ***GET** request* to webhook endpoint
+which contains **secret token**. You need to provide the **secret token** in **options.webhookToken**.
 
-You can choose to handle it manually by accepts all the request or using service function to handle it.
+You can implements manually by accepts all the request or using service function to handle it.
 
 ```javascript
 app.get('<webhook_endpoint>', function(req, res){
