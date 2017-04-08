@@ -3,6 +3,35 @@ This module made for sending and handle messenger service of Facebook and LINE w
 
 ** Usage of header signature verification is not guaranteed. Because some NodeJS framework (like express.js) modify the request body before library can access to it. **
 
+## Table of Contents
+
+<!-- TOC -->
+
+- [Facebook and LINE module for notification service](#facebook-and-line-module-for-notification-service)
+    - [Table of Contents](#table-of-contents)
+    - [Overview](#overview)
+    - [Requirement](#requirement)
+    - [Installation](#installation)
+    - [Facebook module creation](#facebook-module-creation)
+    - [LINE module creation](#line-module-creation)
+    - [Simple user entrance process](#simple-user-entrance-process)
+        - [Get the entry URL](#get-the-entry-url)
+        - [Send Login action to user inbox - required for **Facebook** only](#send-login-action-to-user-inbox---required-for-facebook-only)
+        - [Handle callback and process to get permanent user id](#handle-callback-and-process-to-get-permanent-user-id)
+            - [Facebook](#facebook)
+            - [LINE](#line)
+    - [Send the message](#send-the-message)
+        - [Facebook](#facebook-1)
+        - [Line](#line)
+    - [Webhook handling](#webhook-handling)
+        - [Facebook](#facebook-2)
+            - [Endpoint confirmation](#endpoint-confirmation)
+            - [General webhook handle](#general-webhook-handle)
+        - [LINE](#line-1)
+            - [General webhook handle](#general-webhook-handle-1)
+
+<!-- /TOC -->
+
 ## Overview
 This module can be normally called like normal node module.
 It was not bundled with webpack or other bundler script.
