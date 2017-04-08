@@ -45,6 +45,8 @@ var service = require('lz-social-module');
 
 It is general NodeJS module which is not bundled with any bundler script and not using ES 2015 code style.
 
+We use Promise polyfill to make it support node 4.x and keep the code readible.
+
 ## Installation
 
 ```bash
