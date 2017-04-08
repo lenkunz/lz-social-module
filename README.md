@@ -22,34 +22,39 @@ This module made for sending and handle messenger service of Facebook and LINE w
             - [Facebook](#facebook)
             - [LINE](#line)
     - [Send the message](#send-the-message)
-        - [Facebook](#facebook-1)
-        - [Line](#line)
+        - [Message sending Facebook service](#message-sending-facebook-service)
+        - [Message sending for Line service](#message-sending-for-line-service)
     - [Webhook handling](#webhook-handling)
-        - [Facebook](#facebook-2)
+        - [Facebook webhook handling](#facebook-webhook-handling)
             - [Endpoint confirmation](#endpoint-confirmation)
-            - [General webhook handle](#general-webhook-handle)
-        - [LINE](#line-1)
-            - [General webhook handle](#general-webhook-handle-1)
+            - [General Facebook webhook handle](#general-facebook-webhook-handle)
+        - [LINE webhook handling](#line-webhook-handling)
+            - [General LINE webhook handle](#general-line-webhook-handle)
 
 <!-- /TOC -->
 
 ## Overview
 This module can be normally called like normal node module.
 It was not bundled with webpack or other bundler script.
+
 ```javascript
 var service = require('lz-social-module');
 ```
 
 ## Requirement
+
 It is general NodeJS module which is not bundled with any bundler script and not using ES 2015 code style.
 
 ## Installation
+
 ```bash
 npm install lz-social-module --save
 ```
 
 ## Service module initialize
+
 ### Facebook service
+
 To initialize Facebook module you only need to create instance by following code.
 
 ```javascript
@@ -92,6 +97,7 @@ This module was designed to handle those process to link app's account with mess
 It was only compatible with ***NodeJS HTTP request style*** (e.g. Express.js)
 
 ### Redirect user to initialize the process
+
 Both **LINE** and **Facebook** require user to follow specific generated URL to let it know that user allow the service to message them. Which called **Entry Point**.
 
 You can get **Entry Point** URL by call these functions.
@@ -108,6 +114,7 @@ When **state** is the *string* that can use for identify the user to app in a sp
 *Permanent **state** string is not recommended for security reason.*
 
 ### Send login button to user's messenger - only for **Facebook**
+
 After user followed the **Entry Point** URL Facebook will send **OPEN_THREAD** webhook to where you set it in Facebook developer app console.
 
 The service implements function that can handles the process. But you need to give it a HTTP request object. (mostly called as **req** in express.js and Node HTTP module)
@@ -139,10 +146,12 @@ app.post('<webhook_endpoint>', function(req, res, next){
 ```
 
 ### Get permanent user message **Chatbox ID** 
+
 - For **Facebook** this will happens after user click the login link.
 - For **LINE** this will happens after user login after followed the **Entry Point URL**.
 
 #### Facebook
+
 ```javascript
 // This will be a normal webpage
 app.get('<path_to_callback_url_in_option>', function(req, res, next){
@@ -166,6 +175,7 @@ app.get('<path_to_callback_url_in_option>', function(req, res, next){
 ```
 
 #### LINE
+
 ```javascript
 app.get('<path_to_callback_url_in_option>', function(req, res, next){
     LINE.auth.callback(req, function(err, data){
@@ -185,21 +195,25 @@ app.get('<path_to_callback_url_in_option>', function(req, res, next){
 ```
 
 ## Send the message
+
 To send message to user. The service need user object which has following structure.
+
 ```json
 {
     "id": "user or channel id"
 }
 ```
 
-### Facebook
+### Message sending Facebook service
+
 ```javascript
 FB.message.text(user, "Hello, World!", function(err){
     // When message were send.
 });
 ```
 
-### Line
+### Message sending for Line service
+
 ```javascript
 LINE.message.text(user, "Hello, World", function(err){
     // When message were send.
@@ -207,8 +221,11 @@ LINE.message.text(user, "Hello, World", function(err){
 ```
 
 ## Webhook handling
-### Facebook
+
+### Facebook webhook handling
+
 #### Endpoint confirmation
+
 To use **Facebook** webhook. It requires the service to confirm its status by sending ***GET** request* to webhook endpoint
 which contains **secret token**. You need to provide the **secret token** in **options.webhookToken**.
 
@@ -225,9 +242,11 @@ app.get('<webhook_endpoint>', function(req, res){
 });
 ```
 
-#### General webhook handle
+#### General Facebook webhook handle
+
 This service only handle the webhook specific to the its function. 
 You can also handle it manually to get other webhook. This service contains the webhook filter that can filter some of webhook that not for your app.
+
 ```javascript
 app.post('<webhook_endpoint>', function(req, res, next){
     if(!FB.webhook.webhookFilter(req)){
@@ -238,8 +257,9 @@ app.post('<webhook_endpoint>', function(req, res, next){
 });
 ```
 
-### LINE
-#### General webhook handle
+### LINE webhook handling
+
+#### General LINE webhook handle
 By general LINE webhook handler will only filter the webhook and let all webhook pass.
 ```javascript
 app.post('<webhook_endpoint>', function(req, res, next){
@@ -254,6 +274,7 @@ app.post('<webhook_endpoint>', function(req, res, next){
 ```
 
 You can also handle it manually to get other webhook. This service contains the webhook filter that can filter some of webhook that not for your app.
+
 ```javascript
 app.post('<webhook_endpoint>', function(req, res, next){
     if(!LINE.webhook.webhookFilter(req)){
