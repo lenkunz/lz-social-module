@@ -7,7 +7,7 @@ This module made for sending and handle messenger service of Facebook and LINE w
 This module can be normally called like normal node module.
 It was not bundled with webpack or other bundler script.
 ```javascript
-var service = require('<path_to_module>');
+var service = require('lz-social-module');
 ```
 
 ## Requirement
@@ -22,7 +22,7 @@ npm install lz-social-module
 To initialize facebook module just require the module and create instance of facebook
 
 ```javascript
-var service = require('<path_to_module>');
+var service = require('lz-social-module');
 var FB = new service.Facebook({
     webhookToken: "Facebook webhook token using to verify the webhook.",
     accountLinkUrl: "This is url that will be using as callback when user click on account_link message.",
@@ -37,7 +37,7 @@ All options property is required. You must provide all of them.
 To initialize LINE module just require the module and create instance of facebook
 
 ```javascript
-var service = require('<path_to_module>');
+var service = require('lz-social-module');
 var LINE = new service.Line({
     callbackUrl: "Callback for redirect user to web.",
     botSecret: "Secret key of bot channel.",
